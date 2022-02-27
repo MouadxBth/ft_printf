@@ -6,43 +6,48 @@
 /*   By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:53:30 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/02/27 18:08:24 by mbouthai         ###   ########.fr       */
+/*   Updated: 2022/02/27 21:05:28 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static void	ft_printnbr_base(int fd, unsigned long n, char *base, size_t radix)
+static size_t	ft_print_nbr(int fd, unsigned long n, char *base, size_t radix)
 {
-        long	nbr;
+	unsigned long	nbr;
+	size_t			result;
 
 	nbr = n;
+	result = 0;
 	if ((size_t) nbr < radix)
-		ft_putchar(fd, base[nbr]);
+		result += ft_putchar(fd, base[nbr]);
 	else
 	{
-		ft_printnbr_base(fd, nbr / radix, base, radix);
-		ft_printnbr_base(fd, nbr % radix, base, radix);
+		result += ft_print_nbr(fd, nbr / radix, base, radix);
+		result += ft_print_nbr(fd, nbr % radix, base, radix);
 	}
+	return (result);
 }
 
-int     ft_putnbr(int fd, long n, int is_signed, char *base)
+int	ft_putnbr(int fd, long long n, int is_signed, char *base)
 {
 	size_t	radix;
+	int		result;
 
 	if (fd < 0)
 		return (0);
 	radix = ft_strlen(base);
 	if (radix <= 0)
 		return (0);
+	result = 0;
 	if (is_signed)
 	{
 		if (n < 0)
 		{
-			ft_putchar(fd, '-');
+			result += ft_putchar(fd, '-');
 			n *= -1;
 		}
 	}	
-	ft_printnbr_base(fd, n, base, radix);
-	return (ft_nbrlen(n, is_signed, radix));
+	result += ft_print_nbr(fd, n, base, radix);
+	return (result);
 }

@@ -3,9 +3,10 @@
 
 int     main(void)
 {
-	int a = 612937244;
+	unsigned long a = 4294967295;
 	//printf("%lu\n", ft_nbrlen(140729151582108, 0, 16));
-        ft_printf("ft -> %i\n", ft_printf("%p\n", &a));
-        printf("-> %i\n", printf("%p\n", &a));
-        return (0);
+        printf("%i\n", ft_printf(" %lu ", -1 * a));
+        printf("%i\n", printf(" %lu ", -1 * a));
+        //printf("%lu\n", ft_nbrlen(a, 0, 16));
+	return (0);
 }

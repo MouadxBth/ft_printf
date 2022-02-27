@@ -6,7 +6,7 @@
 /*   By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 19:05:21 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/02/27 18:26:43 by mbouthai         ###   ########.fr       */
+/*   Updated: 2022/02/27 21:06:20 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ size_t	ft_strlen(const char *str)
 	return (length);
 }
 
-size_t	ft_nbrlen(long n, int is_signed, int base)
+size_t	ft_nbrlen(long long n, int is_signed, int base)
 {
-	size_t	length;
-	long	nbr;
+	size_t		length;
+	long long	nbr;
 
 	length = 0;
 	nbr = n;

@@ -6,11 +6,15 @@
 /*   By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 19:02:53 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/02/27 18:09:56 by mbouthai         ###   ########.fr       */
+/*   Updated: 2022/02/27 20:08:31 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+#define DECIMAL "0123456789"
+#define LOW_HEX "0123456789abcdef"
+#define UPP_HEX "0123456789ABCDEF"
 
 static int	ft_process_formats(const char *str, va_list args)
 {
@@ -19,13 +23,13 @@ static int	ft_process_formats(const char *str, va_list args)
 	else if (*str == 's')
 		return (ft_putstr(STD_FD, va_arg(args, char *)));
 	else if (*str == 'd' || *str == 'i')
-		return (ft_putnbr(STD_FD, va_arg(args, int), 1, "0123456789"));
+		return (ft_putnbr(STD_FD, va_arg(args, int), 1, DECIMAL));
 	else if (*str == 'u')
-		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, "0123456789"));
+		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, DECIMAL));
 	else if (*str == 'x')
-		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, "0123456789abcdef"));
+		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, LOW_HEX));
 	else if (*str == 'X')
-		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, "0123456789ABCDEF"));
+		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, UPP_HEX));
 	else if (*str == '%')
 		return (write(1, "%", 1));
 	else if (*str == 'p')
