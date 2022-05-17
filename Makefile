@@ -6,7 +6,7 @@
 #    By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/27 12:39:59 by mbouthai          #+#    #+#              #
-#    Updated: 2022/02/27 21:55:58 by mbouthai         ###   ########.fr        #
+#    Updated: 2022/05/15 20:49:20 by mbouthai         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,22 +20,20 @@ DEPS    = ft_printf.h
 
 CFLAGS  = -Wall -Wextra
 
-SRCS    = ft_printf_utils.c  \
+SRCS    = ft_printf_utils.c  ft_printf_nbr_utils.c \
           ft_handle_char.c ft_handle_str.c \
-	  ft_handle_nbr.c ft_handle_ptr.c \
+	  ft_handle_hex.c ft_handle_ptr.c \
+	  ft_handle_signed.c ft_handle_unsigned.c \
 	  ft_printf_format.c ft_printf.c
 
 OBJS    = $(SRCS:.c=.o)
 
-DRIVER	= main.c
+all: $(NAME) 
 
-all: $(NAME) driver
+bonus: $(NAME)
 
 $(NAME): $(OBJS)
 	$(ARCHIVE) $@ $^
-
-driver:
-	$(CC) $(CFLAGS) -g $(DRIVER) -L. -l:$(NAME)
 
 %.o: %.c $(DEPS)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -44,7 +42,7 @@ clean:
 	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME) a.out
+	rm -f $(NAME) 
 
 re: fclean all
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_handle_nbr.c                                    :+:      :+:    :+:   */
+/*   ft_printf_nbr_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mbouthai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/27 12:53:30 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/02/27 21:05:28 by mbouthai         ###   ########.fr       */
+/*   Created: 2022/05/15 13:28:59 by mbouthai          #+#    #+#             */
+/*   Updated: 2022/05/16 20:20:42 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,41 @@ static size_t	ft_print_nbr(int fd, unsigned long n, char *base, size_t radix)
 	return (result);
 }
 
+size_t	ft_unsigned_nbrlen(unsigned long n, int base)
+{
+	size_t	length;
+
+	length = 0;
+	if (!n)
+		return (1);
+	while (n)
+	{
+		n /= base;
+		length++;
+	}
+	return (length);
+}
+
+size_t	ft_signed_nbrlen(long long n, int base)
+{
+	size_t	length;
+
+	length = 0;
+	if (!n)
+		return (1);
+	if (n < 0)
+	{
+		n *= -1;
+		length++;
+	}
+	while (n)
+	{
+		n /= base;
+		length++;
+	}
+	return (length);
+}
+
 int	ft_putnbr(int fd, long long n, int is_signed, char *base)
 {
 	size_t	radix;
@@ -40,14 +75,8 @@ int	ft_putnbr(int fd, long long n, int is_signed, char *base)
 	if (radix <= 0)
 		return (0);
 	result = 0;
-	if (is_signed)
-	{
-		if (n < 0)
-		{
-			result += ft_putchar(fd, '-');
-			n *= -1;
-		}
-	}	
+	if (is_signed && n < 0)
+		n *= -1;
 	result += ft_print_nbr(fd, n, base, radix);
 	return (result);
 }

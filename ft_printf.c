@@ -6,15 +6,13 @@
 /*   By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 19:02:53 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/02/27 23:23:08 by mbouthai         ###   ########.fr       */
+/*   Updated: 2022/05/17 11:29:54 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-#define DECIMAL "0123456789"
-#define LOW_HEX "0123456789abcdef"
-#define UPP_HEX "0123456789ABCDEF"
+#include <stdio.h>
+#include <limits.h>
 
 static int	ft_get_int(const char *str, int *chars_to_skip)
 {
@@ -41,31 +39,50 @@ static int	ft_process_flags(const char *str, t_format *format)
 		else if (str[index] == '0')
 			format->zero_padding = ft_get_int(str + ++index, &index);
 		else if (str[index] == '.')
+		{
 			format->precision = ft_get_int(str + ++index, &index);
+			format->precision_flag = 1;
+		}
 		else if (ft_isdigit(str[index]))
 			format->minimum_width = ft_get_int(str + index, &index);
+		else if (str[index] == '#')
+		{
+			format->alt_form = 1;
+			index++;
+		}
+		else if (str[index] == ' ')
+		{
+			format->sign_replacement = 1;
+			index++;
+		}
+		else if (str[index] == '+')
+		{
+			format->sign_precedence = 1;
+			index++;
+		}
 	}
         return (index);
 }
 
-static int	ft_process_specifiers(const char *str, va_list args)
+static int	ft_process_specifiers(const char *str, t_format *format)
 {
+
 	if (*str == 'c')
-		return (ft_putchar(STD_FD, va_arg(args, int)));
+		return (ft_handle_char(STD_FD, format));
 	else if (*str == 's')
-		return (ft_putstr(STD_FD, va_arg(args, char *)));
+		return (ft_handle_str(STD_FD, format));
 	else if (*str == 'd' || *str == 'i')
-		return (ft_putnbr(STD_FD, va_arg(args, int), 1, DECIMAL));
+		return (ft_handle_signed(STD_FD, format));
 	else if (*str == 'u')
-		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, DECIMAL));
+		return (ft_handle_unsigned(STD_FD, format));
 	else if (*str == 'x')
-		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, LOW_HEX));
+		return (ft_handle_hex(STD_FD, format, 0));
 	else if (*str == 'X')
-		return (ft_putnbr(STD_FD, va_arg(args, unsigned int), 0, UPP_HEX));
+		return (ft_handle_hex(STD_FD, format, 1));
+	else if (*str == 'p')
+		return (ft_handle_ptr(STD_FD, format));
 	else if (*str == '%')
 		return (write(1, "%", 1));
-	else if (*str == 'p')
-		return (ft_putptr(STD_FD, va_arg(args, unsigned long)));
 	return (0);
 }
 
@@ -83,7 +100,8 @@ static int	ft_loop(t_format *format, const char *str, ...)
 			ft_bzero_format(format);
 			index++;
 			index += ft_process_flags(str + index, format);
-			bytes_written += ft_process_specifiers(str + index, format->args);
+			format = ft_correct_format(format);
+			bytes_written += ft_process_specifiers(str + index, format);
 		}
 		else
 			bytes_written += ft_putchar(STD_FD, str[index]);
@@ -106,4 +124,4 @@ int	ft_printf(const char *str, ...)
 	va_end(format->args);
 	free(format);
 	return (bytes_written);
-}
+}  

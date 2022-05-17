@@ -6,7 +6,7 @@
 /*   By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/27 12:53:15 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/02/27 23:07:58 by mbouthai         ###   ########.fr       */
+/*   Updated: 2022/05/15 11:41:30 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,13 @@ int	ft_putchar(int fd, int c)
 	return (write(1, &c, 1));
 }
 
-int	ft_handle_char(int fd, t_format *format)
+int	ft_print_char(int fd, t_format *format, int c)
 {
 	int	result;
-	char	c;
 
 	if (!format)
 		return (0);
 	result = 0;
-	c = va_arg(format->args, int);
 	if (format->left_justify)
 	{
 		result += ft_putchar(fd, c);
@@ -41,4 +39,9 @@ int	ft_handle_char(int fd, t_format *format)
 	else
 		result += ft_putchar(fd, c);
 	return (result);
+}
+
+int	ft_handle_char(int fd, t_format *format)
+{
+	return (ft_print_char(fd, format, va_arg(format->args, int)));
 }
