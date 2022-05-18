@@ -6,7 +6,7 @@
 /*   By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 19:05:21 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/05/16 19:44:13 by mbouthai         ###   ########.fr       */
+/*   Updated: 2022/05/18 20:14:00 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ int	ft_isdigit(int c)
 
 int	ft_is_conversion(int c)
 {
-	return (c == 'u' || c == 'd' ||
-		c == 'c' || c == 's' ||
-		c == 'i' || c == 'p' ||
-		c == 'x' || c == 'X' ||
-		c == '%');
+	return (c == 'u' || c == 'd' || c == 'c' || c == 's'
+		|| c == 'i' || c == 'p' || c == 'x' || c == 'X'
+		|| c == '%');
 }
 
 size_t	ft_strlen(const char *str)
@@ -46,6 +44,6 @@ size_t	ft_repeat_print(int fd, int c, int n)
 		return (0);
 	length = 0;
 	while (n-- > 0)
-		length += ft_putchar(fd, c);
+		length += write(fd, &c, 1);
 	return (length);
 }

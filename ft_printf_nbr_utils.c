@@ -6,7 +6,7 @@
 /*   By: mbouthai <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/15 13:28:59 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/05/16 20:20:42 by mbouthai         ###   ########.fr       */
+/*   Updated: 2022/05/18 22:05:52 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static size_t	ft_print_nbr(int fd, unsigned long n, char *base, size_t radix)
 	nbr = n;
 	result = 0;
 	if ((size_t) nbr < radix)
-		result += ft_putchar(fd, base[nbr]);
+		result += write(fd, &base[nbr], 1);
 	else
 	{
 		result += ft_print_nbr(fd, nbr / radix, base, radix);
@@ -62,6 +62,15 @@ size_t	ft_signed_nbrlen(long long n, int base)
 		length++;
 	}
 	return (length);
+}
+
+int	ft_handle_padding(int fd, t_format *format, size_t nbr_len)
+{
+	if (format->precision)
+		return (ft_repeat_print(fd, '0', format->precision - nbr_len));
+	else if (format->zero_padding)
+		return (ft_repeat_print(fd, '0', format->zero_padding - nbr_len));
+	return (0);
 }
 
 int	ft_putnbr(int fd, long long n, int is_signed, char *base)

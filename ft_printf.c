@@ -6,7 +6,7 @@
 /*   By: mbouthai <mbouthai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 19:02:53 by mbouthai          #+#    #+#             */
-/*   Updated: 2022/05/17 11:29:54 by mbouthai         ###   ########.fr       */
+/*   Updated: 2022/05/18 22:06:58 by mbouthai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,42 +31,32 @@ static int	ft_process_flags(const char *str, t_format *format)
 {
 	int	index;
 
-        index = 0;
+	index = 0;
 	while (!ft_is_conversion(str[index]))
 	{
 		if (str[index] == '-')
 			format->left_justify = ft_get_int(str + ++index, &index);
 		else if (str[index] == '0')
 			format->zero_padding = ft_get_int(str + ++index, &index);
+		else if (str[index] == '#')
+			format->alt_form = ++index;
+		else if (str[index] == ' ')
+			format->sign_replacement = ++index;
+		else if (str[index] == '+')
+			format->sign_precedence = ++index;
+		else if (ft_isdigit(str[index]))
+			format->minimum_width = ft_get_int(str + index, &index);
 		else if (str[index] == '.')
 		{
 			format->precision = ft_get_int(str + ++index, &index);
 			format->precision_flag = 1;
 		}
-		else if (ft_isdigit(str[index]))
-			format->minimum_width = ft_get_int(str + index, &index);
-		else if (str[index] == '#')
-		{
-			format->alt_form = 1;
-			index++;
-		}
-		else if (str[index] == ' ')
-		{
-			format->sign_replacement = 1;
-			index++;
-		}
-		else if (str[index] == '+')
-		{
-			format->sign_precedence = 1;
-			index++;
-		}
 	}
-        return (index);
+	return (index);
 }
 
 static int	ft_process_specifiers(const char *str, t_format *format)
 {
-
 	if (*str == 'c')
 		return (ft_handle_char(STD_FD, format));
 	else if (*str == 's')
@@ -75,14 +65,20 @@ static int	ft_process_specifiers(const char *str, t_format *format)
 		return (ft_handle_signed(STD_FD, format));
 	else if (*str == 'u')
 		return (ft_handle_unsigned(STD_FD, format));
-	else if (*str == 'x')
-		return (ft_handle_hex(STD_FD, format, 0));
-	else if (*str == 'X')
-		return (ft_handle_hex(STD_FD, format, 1));
 	else if (*str == 'p')
 		return (ft_handle_ptr(STD_FD, format));
 	else if (*str == '%')
 		return (write(1, "%", 1));
+	else if (*str == 'x')
+	{
+		format->specifier = 'x';
+		return (ft_handle_hex(STD_FD, format));
+	}
+	else if (*str == 'X')
+	{
+		format->specifier = 'X';
+		return (ft_handle_hex(STD_FD, format));
+	}
 	return (0);
 }
 
@@ -104,15 +100,16 @@ static int	ft_loop(t_format *format, const char *str, ...)
 			bytes_written += ft_process_specifiers(str + index, format);
 		}
 		else
-			bytes_written += ft_putchar(STD_FD, str[index]);
+			bytes_written += write(STD_FD, &str[index], 1);
 		index++;
 	}
 	return (bytes_written);
 }
+
 int	ft_printf(const char *str, ...)
 {
 	t_format	*format;
-	int		bytes_written;
+	int			bytes_written;
 
 	if (!str)
 		return (0);
@@ -124,4 +121,4 @@ int	ft_printf(const char *str, ...)
 	va_end(format->args);
 	free(format);
 	return (bytes_written);
-}  
+}
